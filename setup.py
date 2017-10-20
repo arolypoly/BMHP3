@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# TODO New setup script
 
 from distutils.core import setup
 
@@ -9,4 +10,4 @@ setup(name='dynamixel_hr',
       author_email='pc@humarobotics.com',
       url='www.humarobotics.com',
       packages=['dxl'],
-     )
+      )

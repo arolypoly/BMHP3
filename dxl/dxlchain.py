@@ -3,6 +3,7 @@
 # Dynamixel library for MX28 and MX64
 
 # WINDOWS WARNING: For best performance, parameters of the COM Port should be set to maximum baud rate, and 1ms delay (Device Manager, COM Ports, properties, advanced)
+import struct
 
 from dxlcore import *
 from dxlregisters import *
@@ -10,6 +11,7 @@ from dxlmotors import *
 from dxlsensors import *
 
 import sys
+import b
 import serial
 import time
 import logging
@@ -29,7 +31,7 @@ class DxlChain:
     If the chain is unknown you can directly call get_motor_list to obtain the list of available motors.
     """
 
-    def __init__(self, portname, rate=57142, timeout=0.04):
+    def __init__(self, portname: object, rate: object = 57142, timeout: object = 0.04) -> object:
         """
         DO NOT CHANGE THE DEFAULT BAUDRATE HERE: 57142 is the factory setting of Dynamixel motors
         """
@@ -85,8 +87,7 @@ class DxlChain:
     def _send(self, id, packet):
         """ Takes a payload, packages it as [header,id,length,payload,checksum], sends it on serial and flush"""
         checksumed_data = [id, len(packet) + 1] + packet
-
-        data = "".join(map(chr, [0xFF, 0xFF] + checksumed_data + [self.checksum(checksumed_data)]))
+        data = bytes([0xFF, 0xFF] + checksumed_data + [self.checksum(checksumed_data)])
         self.port.write(data)
         self.port.flushOutput()
 
@@ -98,14 +99,16 @@ class DxlChain:
     def _recv(self):
         """Wait for a response on the serial, validate it, raise errors if any, return id and data if any """
         # Read the first 4 bytes 0xFF,0xFF,id,length
-        header = array.array('B', self.port.read(4))
-        if (len(header) != 4):
+        header = (self.port.read(4))
+        logging.info(header)
+        header = bytearray(header)
+        if len(header) != 4:
             raise DxlCommunicationException(
                 'Could not read first 4 bytes of expected response, got %d bytes' % len(header))
         else:
             id, expectedsize = header[2:4]
             # Read number of expected bytes
-            data = array.array('B', self.port.read(expectedsize))
+            data = bytearray(self.port.read(expectedsize))
             if len(data) != expectedsize:
                 raise DxlCommunicationException(
                     'Could not read %d data bytes of expected response, got %d bytes' % (expectedsize, len(data)))
@@ -122,7 +125,7 @@ class DxlChain:
                     raise DxlCommunicationException('Invalid checksum')
                 data = data[1:-1]
                 # ~ print data
-            return (id, data)
+            return id, data
 
     def comm(self, id, packet):
         """Communicate with the Dynamixel by sending a packet and retrieving the response"""
@@ -361,7 +364,7 @@ class DxlChain:
 
     # Configuration get/set functionalities
 
-    def get_motor_list(self, broadcast=True, instantiate=True):
+    def get_motor_list(self, broadcast: object = True, instantiate: object = True) -> object:
         with self.lock:
             """Obtains the list of motors available on a chain, and optionally tries to instantiante them."""
             start = time.time()
@@ -457,7 +460,7 @@ class DxlChain:
 
     def get_motors(self, ids=None):
         """Return the list of all motors ids, or a specific set, or a single id"""
-        if ids == None:
+        if ids is None:
             return self.motors.keys()
 
         elif type(ids) == type(list()):
@@ -508,7 +511,7 @@ class DxlChain:
         Moves a motor to a position at a specified speed (or current speed if none provided) and waits for motion to be completed (unless blocking=False is passed).
         This is a blocking function by default.
         """
-        if speed != None:
+        if speed is not None:
             self.set_reg(id, "moving_speed", speed)
         self.set_reg(id, "goal_pos", pos)
         if blocking:

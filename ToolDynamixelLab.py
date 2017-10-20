@@ -283,7 +283,7 @@ class MainWindow:
         if os.name == "nt":
             port = "COM21"
         else:
-            port = "/dev/ttyACM0"
+            port = "/dev/ttyUSB0"
         self.comPort.set(port)
         entryComPort = Entry(frame, textvariable=self.comPort)
 
