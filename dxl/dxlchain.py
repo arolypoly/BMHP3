@@ -100,24 +100,23 @@ class DxlChain:
         """Wait for a response on the serial, validate it, raise errors if any, return id and data if any """
         # Read the first 4 bytes 0xFF,0xFF,id,length
         header = (self.port.read(4))
-        logging.info(header)
-        header = bytearray(header)
-        if len(header) != 4:
+        if header.__len__() != 4:
             raise DxlCommunicationException(
                 'Could not read first 4 bytes of expected response, got %d bytes' % len(header))
         else:
             id, expectedsize = header[2:4]
             # Read number of expected bytes
-            data = bytearray(self.port.read(expectedsize))
-            if len(data) != expectedsize:
+            data = (self.port.read(expectedsize))
+            if data.__len__() != expectedsize:
                 raise DxlCommunicationException(
                     'Could not read %d data bytes of expected response, got %d bytes' % (expectedsize, len(data)))
 
-            if len(data) > 0:
+            if data.__len__() > 0:
                 error = data[0]
 
                 if error != 0 and error != 2:  # skip angle errors
                     # TODO Distinguish communication/Hardware errors
+                    logging.error("Packet: ".join(header.__str__()))
                     raise DxlCommunicationException('Received error code from motor %d: %d' % (id, error))
 
                 checksum = self.checksum(header[2:] + data[:-1])
