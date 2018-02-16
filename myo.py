@@ -8,6 +8,7 @@ import numpy as np
 
 try:
     from sklearn import neighbors, svm
+
     HAVE_SK = True
 except ImportError:
     HAVE_SK = False
@@ -17,6 +18,7 @@ from myo_raw import MyoRaw
 
 SUBSAMPLE = 3
 K = 15
+
 
 class NNClassifier(object):
     '''A wrapper for sklearn's nearest-neighbor classifier that stores
@@ -52,7 +54,7 @@ class NNClassifier(object):
             self.nn = None
 
     def nearest(self, d):
-        dists = ((self.X - d)**2).sum(1)
+        dists = ((self.X - d) ** 2).sum(1)
         ind = dists.argmin()
         return self.Y[ind]
 
@@ -96,16 +98,20 @@ class Myo(MyoRaw):
         for h in self.pose_handlers:
             h(pose)
 
+
 if __name__ == '__main__':
     import subprocess
+
     m = Myo(NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
     m.add_raw_pose_handler(print)
+
 
     def page(pose):
         if pose == 5:
             subprocess.call(['xte', 'key Page_Down'])
         elif pose == 6:
             subprocess.call(['xte', 'key Page_Up'])
+
 
     m.add_raw_pose_handler(page)
 

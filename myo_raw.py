@@ -9,10 +9,10 @@
         https://github.com/Alvipe/myo-raw
 '''
 
-
 from __future__ import print_function
 
 import enum
+import logging
 import re
 import struct
 import sys
@@ -70,12 +70,13 @@ class Packet(object):
 
     def __repr__(self):
         return 'Packet(%02X, %02X, %02X, [%s])' % \
-            (self.typ, self.cls, self.cmd,
-             ' '.join('%02X' % b for b in multiord(self.payload)))
+               (self.typ, self.cls, self.cmd,
+                ' '.join('%02X' % b for b in multiord(self.payload)))
 
 
 class BT(object):
     '''Implements the non-Myo-specific details of the Bluetooth protocol.'''
+
     def __init__(self, tty):
         self.ser = serial.Serial(port=tty, baudrate=9600, dsrdtr=1)
         self.buf = []
@@ -146,6 +147,7 @@ class BT(object):
         def h(p):
             if p.cls == cls and p.cmd == cmd:
                 res[0] = p
+
         self.add_handler(h)
         while res[0] is None:
             self.recv_packet()
@@ -416,15 +418,19 @@ class MyoRaw(object):
         self.write_attr(0x28, b'\x01\x00')  # Suscribe to EMG notifications
         self.write_attr(0x1d, b'\x01\x00')  # Suscribe to IMU notifications
         self.write_attr(0x24, b'\x02\x00')  # Suscribe to classifier indications
-        self.write_attr(0x19, b'\x01\x03\x01\x01\x01')  # Set EMG and IMU, payload size = 3, EMG on, IMU on, classifier on
+        self.write_attr(0x19,
+                        b'\x01\x03\x01\x01\x01')  # Set EMG and IMU, payload size = 3, EMG on, IMU on, classifier on
         self.write_attr(0x28, b'\x01\x00')  # Suscribe to EMG notifications
         self.write_attr(0x1d, b'\x01\x00')  # Suscribe to IMU notifications
-        self.write_attr(0x19, b'\x09\x01\x01\x00\x00')  # Set sleep mode, payload size = 1, never go to sleep, don't know, don't know
+        self.write_attr(0x19,
+                        b'\x09\x01\x01\x00\x00')  # Set sleep mode, payload size = 1, never go to sleep, don't know, don't know
         self.write_attr(0x1d, b'\x01\x00')  # Suscribe to IMU notifications
-        self.write_attr(0x19, b'\x01\x03\x00\x01\x00')  # Set EMG and IMU, payload size = 3, EMG off, IMU on, classifier off
+        self.write_attr(0x19,
+                        b'\x01\x03\x00\x01\x00')  # Set EMG and IMU, payload size = 3, EMG off, IMU on, classifier off
         self.write_attr(0x28, b'\x01\x00')  # Suscribe to EMG notifications
         self.write_attr(0x1d, b'\x01\x00')  # Suscribe to IMU notifications
-        self.write_attr(0x19, b'\x01\x03\x01\x01\x00')  # Set EMG and IMU, payload size = 3, EMG on, IMU on, classifier off
+        self.write_attr(0x19,
+                        b'\x01\x03\x01\x01\x00')  # Set EMG and IMU, payload size = 3, EMG on, IMU on, classifier off
 
     def mc_end_collection(self):
         '''Myo Connect sends this sequence (or a reordering) when ending data collection
@@ -446,7 +452,7 @@ class MyoRaw(object):
         self.write_attr(0x19, b'\x01\x03\x01\x01\x01')
 
     def vibrate(self, length):
-        if length in xrange(1, 4):
+        if length in range(1, 4):
             # first byte tells it to vibrate; purpose of second byte is unknown (payload size?)
             self.write_attr(0x19, pack('3B', 3, 1, length))
 
@@ -492,10 +498,12 @@ class MyoRaw(object):
         for h in self.battery_handlers:
             h(battery_level)
 
+
 if __name__ == '__main__':
     try:
         import pygame
         from pygame.locals import *
+
         HAVE_PYGAME = True
     except ImportError:
         HAVE_PYGAME = False
@@ -505,6 +513,7 @@ if __name__ == '__main__':
         scr = pygame.display.set_mode((w, h))
 
     last_vals = None
+
 
     def plot(scr, vals):
         DRAW_LINES = True
@@ -520,11 +529,11 @@ if __name__ == '__main__':
         for i, (u, v) in enumerate(zip(last_vals, vals)):
             if DRAW_LINES:
                 pygame.draw.line(scr, (0, 255, 0),
-                                 (w - D, int(h/9 * (i+1 - u))),
-                                 (w, int(h/9 * (i+1 - v))))
+                                 (w - D, int(h / 9 * (i + 1 - u))),
+                                 (w, int(h / 9 * (i + 1 - v))))
                 pygame.draw.line(scr, (255, 255, 255),
-                                 (w - D, int(h/9 * (i+1))),
-                                 (w, int(h/9 * (i+1))))
+                                 (w - D, int(h / 9 * (i + 1))),
+                                 (w, int(h / 9 * (i + 1))))
             else:
                 c = int(255 * max(0, min(1, v)))
                 scr.fill((c, c, c), (w - D, i * h / 8, D, (i + 1) * h / 8 - i * h / 8))
@@ -532,7 +541,9 @@ if __name__ == '__main__':
         pygame.display.flip()
         last_vals = vals
 
+
     m = MyoRaw(sys.argv[1] if len(sys.argv) >= 2 else None)
+
 
     def proc_emg(emg, moving, times=[]):
         if HAVE_PYGAME:
@@ -547,12 +558,14 @@ if __name__ == '__main__':
             # print((len(times) - 1) / (times[-1] - times[0]))
             times.pop(0)
 
+
     def proc_battery(battery_level):
         print("Battery level: %d" % battery_level)
         if battery_level < 5:
             m.set_leds([255, 0, 0], [255, 0, 0])
         else:
             m.set_leds([128, 128, 255], [128, 128, 255])
+
 
     m.add_emg_handler(proc_emg)
     m.add_battery_handler(proc_battery)
@@ -585,6 +598,10 @@ if __name__ == '__main__':
 
     except KeyboardInterrupt:
         pass
+
+    except RuntimeError:
+        logging.error("You dun fukt up a a ron.")
+
     finally:
         # m.power_off()
         # print("Power off")
