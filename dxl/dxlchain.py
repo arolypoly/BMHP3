@@ -5,13 +5,12 @@
 # WINDOWS WARNING: For best performance, parameters of the COM Port should be set to maximum baud rate, and 1ms delay (Device Manager, COM Ports, properties, advanced)
 import struct
 
-from dxlcore import *
-from dxlregisters import *
-from dxlmotors import *
-from dxlsensors import *
+from .dxlcore import *
+from .dxlregisters import *
+from .dxlmotors import *
+from .dxlsensors import *
 
 import sys
-import b
 import serial
 import time
 import logging
@@ -19,7 +18,7 @@ from threading import Lock
 import json
 import array
 from collections import OrderedDict
-from post_threading import Post
+from .post_threading import Post
 
 
 class DxlChain:

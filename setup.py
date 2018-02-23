@@ -9,5 +9,5 @@ setup(name='dynamixel_hr',
       author='Philippe Capdepuy',
       author_email='pc@humarobotics.com',
       url='www.humarobotics.com',
-      packages=['dxl'],
+      packages=['dxl'], requires=['keyboard']
       )

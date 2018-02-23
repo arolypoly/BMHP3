@@ -21,7 +21,6 @@ def periodic(func, **kwargs):
         func(**kwargs)
         time.sleep(60.0 - ((time.time() - starttime) % 60.0))
 
-
 n = 0
 while True:
     if keyboard.is_pressed('a'):
