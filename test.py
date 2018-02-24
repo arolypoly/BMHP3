@@ -6,6 +6,7 @@ import sys
 
 import myo
 import classify_myo
+from myo_raw import Pose
 
 from dxl.dxlchain import DxlChain
 
@@ -22,12 +23,19 @@ print(chain.get_reg(4, "present_load"))
 
 
 def myo2dyna(pose):
-    if pose.__eq__("rest"):
+    if pose.__eq__(Pose.REST):
         chain.goto(4, 0, speed=100, blocking=False)
-    elif pose.__eq__("fingersSpread"):
+    elif pose.__eq__(Pose.FINGERS_SPREAD):
         chain.goto(4, 1000, speed=100, blocking=False)
     else:
         logging.error("Invalid pose.")
+
+
+def periodic(func, **kwargs):
+    starttime = time.time()
+    while True:
+        func(**kwargs)
+        time.sleep(60.0 - ((time.time() - starttime) % 60.0))
 
 
 m = myo.Myo(myo.NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
@@ -39,7 +47,7 @@ m.add_pose_handler(lambda p: myo2dyna(p))
 try:
     m.connect()
     while True:
-        m.run(1)
+        periodic(m.run(1))
 except RuntimeError:
     logging.error("Oof.")
 except KeyboardInterrupt:
