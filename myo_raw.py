@@ -600,7 +600,13 @@ if __name__ == '__main__':
         pass
 
     except RuntimeError:
-        logging.error("You dun fukt up a a ron.")
+        logging.error("Runtime Error.")
+
+    except IOError:
+        logging.error("IO Error.")
+
+    except BlockingIOError:
+        logging.error("Blocking IO Error.")
 
     finally:
         # m.power_off()
