@@ -14,17 +14,18 @@ chain = DxlChain("/dev/ttyUSB0", rate=1000000)
 
 # Load all the motors and obtain the list of IDs
 motors = chain.get_motor_list(broadcast=True)  # Discover all motors on the chain and return their IDs
+print("Discovered Dynamixels and Information:")
 chain.dump()
-chain.goto(2, 0, speed=100, blocking=True)
-chain.goto(2, 1000, speed=0, blocking=True)
-print(chain.get_reg(2, "present_load"))
+chain.goto(4, 0, speed=100, blocking=True)
+chain.goto(4, 1000, speed=0, blocking=True)
+print(chain.get_reg(4, "present_load"))
 
 
 def myo2dyna(pose):
     if pose.__eq__("rest"):
-        chain.goto(2, 0, speed=100, blocking=False)
+        chain.goto(4, 0, speed=100, blocking=False)
     elif pose.__eq__("fingersSpread"):
-        chain.goto(2, 1000, speed=100, blocking=False)
+        chain.goto(4, 1000, speed=100, blocking=False)
     else:
         logging.error("Invalid pose.")
 
