@@ -35,7 +35,7 @@ def periodic(func, **kwargs):
     starttime = time.time()
     while True:
         func(**kwargs)
-        time.sleep(60.0 - ((time.time() - starttime) % 60.0))
+        time.sleep(float(1/60) - ((time.time() - starttime) % float(1/60)))
 
 
 m = myo.Myo(myo.NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
