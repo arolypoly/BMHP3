@@ -47,7 +47,7 @@ m.add_pose_handler(lambda p: myo2dyna(p))
 try:
     m.connect()
     while True:
-        periodic(m.run(1))
+        periodic(m.run(), i=1)
 except RuntimeError:
     logging.error("Oof.")
 except KeyboardInterrupt:
