@@ -47,7 +47,6 @@ m = myo.Myo(myo.NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
 hnd = classify_myo.EMGHandler(m)
 m.add_emg_handler(hnd)
 m.add_arm_handler(lambda arm, xdir: print('arm', arm, 'xdir', xdir))
-m.add_pose_handler(lambda p: print('pose', p))
 m.add_pose_handler(lambda p: myo2dyna(p))
 try:
     m.connect()
