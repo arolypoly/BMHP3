@@ -49,6 +49,7 @@ def myoband():
     m.add_emg_handler(hnd)
     m.add_arm_handler(lambda arm, xdir: print('arm', arm, 'xdir', xdir))
     m.add_pose_handler(lambda p: myo2dyna(p))
+    print("Myoband initialized.")
     try:
         m.connect()
         while True:
