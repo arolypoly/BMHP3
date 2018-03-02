@@ -23,13 +23,13 @@ print(chain.get_reg(4, "present_load"))
 
 
 def myo2dyna(pose):
-    if pose.__eq__(Pose.REST):
+    if pose.__str__().__eq__("Pose.REST"):
         print(pose)
         chain.goto(4, 500, speed=100, blocking=False)
-    elif pose.__eq__(Pose.FINGERS_SPREAD):
+    elif pose.__str__().__eq__("Pose.FINGERS_SPREAD"):
         print(pose)
         chain.goto(4, 1000, speed=100, blocking=False)
-    elif pose.__eq__(Pose.FIST):
+    elif pose.__str__().__eq__("Pose.FIST"):
         print(pose)
         chain.goto(4, 0, speed=100, blocking=False)
     else:
