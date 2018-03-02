@@ -52,8 +52,8 @@ m.add_pose_handler(lambda p: myo2dyna(p))
 try:
     m.connect()
     while True:
-        periodic(m.run, timeout=1)
-        print(chain.get_reg(4, "present_load"))
+        periodic(m.run)
+        periodic(print(chain.get_reg(4, "present_load")))
 except RuntimeError:
     logging.error("Oof.")
 except KeyboardInterrupt:
