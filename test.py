@@ -1,4 +1,3 @@
-import data
 import threading
 import time
 
