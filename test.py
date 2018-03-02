@@ -1,4 +1,4 @@
-import logging
+import data
 import threading
 import time
 
@@ -34,14 +34,14 @@ def myo2dyna(pose):
         print(pose)
         chain.goto(4, 0, speed=100, blocking=False)
     else:
-        logging.error("Invalid pose.")
+        data.error("Invalid pose.")
 
 
 def periodic(func, hz=1, **kwargs):
     starttime = time.time()
     while True:
         func(**kwargs)
-        time.sleep(float(1/hz) - ((time.time() - starttime) % float(1/hz)))
+        time.sleep(float(1 / hz) - ((time.time() - starttime) % float(1 / hz)))
 
 
 def myoband():
@@ -55,20 +55,21 @@ def myoband():
         while True:
             m.run()
     except RuntimeError:
-        logging.error("Oof.")
+        data.error("Oof.")
     except KeyboardInterrupt:
-        logging.info("Stopping...")
+        data.info("Stopping...")
     finally:
         m.disconnect()
-        logging.info("Have nice day.")
+        data.info("Have nice day.")
 
 
-logging = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
-logging.daemon = True
-logging.start()
+data = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
+data.daemon = True
 
 myobandthread = threading.Thread(target=myoband())
 myobandthread.daemon = True
+
+data.start()
 myobandthread.start()
 # n = 0
 # while True:
