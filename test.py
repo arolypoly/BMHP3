@@ -37,34 +37,39 @@ def myo2dyna(pose):
         logging.error("Invalid pose.")
 
 
-def periodic(func, **kwargs):  # float(seconds)
+def periodic(func, hz=1, **kwargs):
     starttime = time.time()
     while True:
         func(**kwargs)
-        time.sleep(float(1) - ((time.time() - starttime) % float(1)))
+        time.sleep(float(1/hz) - ((time.time() - starttime) % float(1/hz)))
 
 
-t = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
-t.daemon = True
-t.start()
+def myoband():
+    m = myo.Myo(myo.NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
+    hnd = classify_myo.EMGHandler(m)
+    m.add_emg_handler(hnd)
+    m.add_arm_handler(lambda arm, xdir: print('arm', arm, 'xdir', xdir))
+    m.add_pose_handler(lambda p: myo2dyna(p))
+    try:
+        m.connect()
+        while True:
+            m.run()
+    except RuntimeError:
+        logging.error("Oof.")
+    except KeyboardInterrupt:
+        logging.info("Stopping...")
+    finally:
+        m.disconnect()
+        logging.info("Have nice day.")
 
-m = myo.Myo(myo.NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
-hnd = classify_myo.EMGHandler(m)
-m.add_emg_handler(hnd)
-m.add_arm_handler(lambda arm, xdir: print('arm', arm, 'xdir', xdir))
-m.add_pose_handler(lambda p: myo2dyna(p))
-try:
-    m.connect()
-    while True:
-        m.run()
-except RuntimeError:
-    logging.error("Oof.")
-except KeyboardInterrupt:
-    logging.info("Stopping...")
-finally:
-    m.disconnect()
-    logging.info("Have nice day.")
 
+logging = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
+logging.daemon = True
+logging.start()
+
+myobandthread = threading.Thread(target=myoband())
+myobandthread.daemon = True
+myobandthread.start()
 # n = 0
 # while True:
 #    if keyboard.is_pressed('a'):
