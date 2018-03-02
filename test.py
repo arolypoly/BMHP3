@@ -24,14 +24,19 @@ print(chain.get_reg(4, "present_load"))
 
 def myo2dyna(pose):
     if pose.__eq__(Pose.REST):
-        chain.goto(4, 0, speed=100, blocking=False)
+        print(pose)
+        chain.goto(4, 500, speed=100, blocking=False)
     elif pose.__eq__(Pose.FINGERS_SPREAD):
+        print(pose)
         chain.goto(4, 1000, speed=100, blocking=False)
+    elif pose.__eq__(Pose.FIST):
+        print(pose)
+        chain.goto(4, 0, speed=100, blocking=False)
     else:
         logging.error("Invalid pose.")
 
 
-def periodic(func, **kwargs):
+def periodic(func, **kwargs):  #float(seconds)
     starttime = time.time()
     while True:
         func(**kwargs)
@@ -48,6 +53,7 @@ try:
     m.connect()
     while True:
         periodic(m.run, timeout=1)
+        print(chain.get_reg(4, "present_load"))
 except RuntimeError:
     logging.error("Oof.")
 except KeyboardInterrupt:
