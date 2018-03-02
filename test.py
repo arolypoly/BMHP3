@@ -1,4 +1,5 @@
 import logging
+import threading
 import time
 
 import keyboard
@@ -36,12 +37,16 @@ def myo2dyna(pose):
         logging.error("Invalid pose.")
 
 
-def periodic(func, **kwargs):  #float(seconds)
+def periodic(func, **kwargs):  # float(seconds)
     starttime = time.time()
     while True:
         func(**kwargs)
-        time.sleep(float(1/60) - ((time.time() - starttime) % float(1/60)))
+        time.sleep(float(1) - ((time.time() - starttime) % float(1)))
 
+
+t = threading.Thread(target=periodic(print(chain.get_reg(4, "present_load"))))
+t.daemon = True
+t.start()
 
 m = myo.Myo(myo.NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
 hnd = classify_myo.EMGHandler(m)
