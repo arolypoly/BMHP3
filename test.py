@@ -62,10 +62,10 @@ def myoband():
 
 
 myobandthread = threading.Thread(target=myoband())
-myobandthread.daemon = True
+myobandthread.daemon = False
 
 data = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
-data.daemon = True
+data.daemon = False
 
 myobandthread.start()
 data.start()
