@@ -44,7 +44,7 @@ def periodic(func, **kwargs):  # float(seconds)
         time.sleep(float(1) - ((time.time() - starttime) % float(1)))
 
 
-t = threading.Thread(target=periodic(print(chain.get_reg(4, "present_load"))))
+t = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
 t.daemon = True
 t.start()
 
