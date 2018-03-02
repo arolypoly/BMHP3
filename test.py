@@ -1,12 +1,10 @@
 import threading
 import time
 
-import keyboard
 import sys
 
 import myo
 import classify_myo
-from myo_raw import Pose
 
 from dxl.dxlchain import DxlChain
 
@@ -33,7 +31,7 @@ def myo2dyna(pose):
         print(pose)
         chain.goto(4, 0, speed=100, blocking=False)
     else:
-        data.error("Invalid pose.")
+        print("Invalid pose.")
 
 
 def periodic(func, hz=1, **kwargs):
@@ -55,22 +53,22 @@ def myoband():
         while True:
             m.run()
     except RuntimeError:
-        data.error("Oof.")
+        print("Oof.")
     except KeyboardInterrupt:
-        data.info("Stopping...")
+        print("Stopping...")
     finally:
         m.disconnect()
-        data.info("Have nice day.")
+        print("Have nice day.")
 
-
-data = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
-data.daemon = True
 
 myobandthread = threading.Thread(target=myoband())
 myobandthread.daemon = True
 
-data.start()
+data = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
+data.daemon = True
+
 myobandthread.start()
+data.start()
 # n = 0
 # while True:
 #    if keyboard.is_pressed('a'):
