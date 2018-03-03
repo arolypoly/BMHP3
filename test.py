@@ -62,5 +62,5 @@ def myoband():
 
 
 pool = pool.Pool()
-pool.apply(myoband())
-pool.apply(lambda: print(chain.get_reg(4, "present_load")))
+pool.apply_async(myoband())
+pool.apply_async(periodic(lambda: print(chain.get_reg(4, "present_load"))))
