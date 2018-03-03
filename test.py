@@ -19,6 +19,8 @@ def git_to(position, blocking=True):
 
 print(dict.fromkeys(range(1, chain.motors.__len__())).__str__())
 print(chain.motors.__len__().__str__())
+print(chain.motors.__len__())
+print(chain.motors)
 # Load all the motors and obtain the list of IDs
 motors = chain.get_motor_list(broadcast=True)  # Discover all motors on the chain and return their IDs
 print("Discovering Dynamixels and dumping information...")
