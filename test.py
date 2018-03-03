@@ -34,6 +34,8 @@ def myo2dyna(pose):
     elif pose.__str__().__eq__("THUMB_TO_PINKY"):
         print(pose)
         chain.set_position({1: 0, 6: 0}, False)
+    else:
+        print("Please gib funding to do gud wrist thank.")
 
 
 def periodic(func, hz=1, **kwargs):
@@ -53,7 +55,6 @@ try:
     m.connect()
     while True:
         m.run()
-        print(chain.get_reg(1, "present_load"))
 except RuntimeError:
     print("Oof.")
 except KeyboardInterrupt:
