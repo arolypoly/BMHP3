@@ -390,8 +390,8 @@ class MainWindow:
         # ~ self.doHideInternalStates.set(True)
 
     def getSelectedMotor(self):
-        items = list(
-            map(int, self.listElements.curselection()))  # dirty hack https://docs.python.org/3.0/whatsnew/3.0.html
+        # dirty hack below https://docs.python.org/3.0/whatsnew/3.0.html ctrl + f list(map(
+        items = list(map(int, self.listElements.curselection()))
         if len(items) == 0:
             return -1
         else:
