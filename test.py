@@ -5,6 +5,7 @@ from multiprocessing import Pool
 
 import myo
 import classify_myo
+from myo_raw import Pose
 
 from dxl.dxlchain import DxlChain
 
@@ -16,22 +17,23 @@ motors = chain.get_motor_list(broadcast=True)  # Discover all motors on the chai
 print("Discovering Dynamixels and dumping information...")
 chain.dump()
 chain.goto(4, 0, speed=100, blocking=True)
-chain.goto(4, 1000, speed=0, blocking=True)
+chain.set_position({chain.motors.__iter__().__next__(): 0})
 print(chain.get_reg(4, "present_load"))
 
 
 def myo2dyna(pose):
-    if pose.__str__().__eq__("Pose.REST"):
+    if pose.__str__().__eq__("Pose.FIST"):
         print(pose)
-        chain.goto(4, 500, speed=100, blocking=False)
+        chain.set_position({chain.motors.__iter__().__next__(): 0}, False)
+    elif pose.__str__().__eq__("Pose.REST"):
+        print(pose)
+        chain.set_position({chain.motors.__iter__().__next__(): 500}, False)
     elif pose.__str__().__eq__("Pose.FINGERS_SPREAD"):
         print(pose)
-        chain.goto(4, 1000, speed=100, blocking=False)
-    elif pose.__str__().__eq__("Pose.FIST"):
+        chain.set_position({chain.motors.__iter__().__next__(): 1000}, False)
+    elif pose.__str__().__eq__("THUMB_TO_PINKY"):
         print(pose)
-        chain.goto(4, 0, speed=100, blocking=False)
-    else:
-        print("Invalid pose.")
+        chain.set_position({1: 0, 6: 0}, False)
 
 
 def periodic(func, hz=1, **kwargs):
@@ -52,6 +54,7 @@ def myoband():
         m.connect()
         while True:
             m.run()
+            print(chain.get_reg(4, "present_load"))
     except RuntimeError:
         print("Oof.")
     except KeyboardInterrupt:
@@ -59,8 +62,3 @@ def myoband():
     finally:
         m.disconnect()
         print("Have nice day.")
-
-
-pool = Pool()
-pool.apply_async(myoband())
-pool.apply_async(periodic(lambda: print(chain.get_reg(4, "present_load"))))
