@@ -43,22 +43,21 @@ def periodic(func, hz=1, **kwargs):
         time.sleep(float(1 / hz) - ((time.time() - starttime) % float(1 / hz)))
 
 
-def myoband():
-    m = myo.Myo(myo.NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
-    hnd = classify_myo.EMGHandler(m)
-    m.add_emg_handler(hnd)
-    m.add_arm_handler(lambda arm, xdir: print('arm', arm, 'xdir', xdir))
-    m.add_pose_handler(lambda p: myo2dyna(p))
-    print("Myoband initialized.")
-    try:
-        m.connect()
-        while True:
-            m.run()
-            print(chain.get_reg(1, "present_load"))
-    except RuntimeError:
-        print("Oof.")
-    except KeyboardInterrupt:
-        print("Stopping...")
-    finally:
-        m.disconnect()
-        print("Have nice day.")
+m = myo.Myo(myo.NNClassifier(), sys.argv[1] if len(sys.argv) >= 2 else None)
+hnd = classify_myo.EMGHandler(m)
+m.add_emg_handler(hnd)
+m.add_arm_handler(lambda arm, xdir: print('arm', arm, 'xdir', xdir))
+m.add_pose_handler(lambda p: myo2dyna(p))
+print("Myoband initialized.")
+try:
+    m.connect()
+    while True:
+        m.run()
+        print(chain.get_reg(1, "present_load"))
+except RuntimeError:
+    print("Oof.")
+except KeyboardInterrupt:
+    print("Stopping...")
+finally:
+    m.disconnect()
+    print("Have nice day.")
