@@ -1,7 +1,7 @@
-import threading
 import time
 
 import sys
+from multiprocessing import pool
 
 import myo
 import classify_myo
@@ -61,22 +61,6 @@ def myoband():
         print("Have nice day.")
 
 
-myobandthread = threading.Thread(target=myoband())
-myobandthread.daemon = False
-
-data = threading.Thread(target=periodic(lambda: print(chain.get_reg(4, "present_load"))))
-data.daemon = False
-
-myobandthread.start()
-data.start()
-# n = 0
-# while True:
-#    if keyboard.is_pressed('a'):
-#        chain.goto(2, n.__add__(1), speed=100, blocking=False)
-#    elif keyboard.is_pressed('d'):
-#        chain.goto(2, n.__sub__(1), speed=100, blocking=False)
-#    elif keyboard.is_pressed('space'):
-#        chain.disable()
-#        break
-#    else:
-#        time.sleep(.001)
+pool = pool.Pool()
+pool.apply(myoband())
+pool.apply(lambda: print(chain.get_reg(4, "present_load")))
