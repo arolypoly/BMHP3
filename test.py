@@ -16,9 +16,9 @@ chain = DxlChain("/dev/ttyUSB0", rate=1000000)
 motors = chain.get_motor_list(broadcast=True)  # Discover all motors on the chain and return their IDs
 print("Discovering Dynamixels and dumping information...")
 chain.dump()
-chain.goto(4, 0, speed=100, blocking=True)
+chain.set_position({chain.motors.__iter__().__next__(): 1000})
 chain.set_position({chain.motors.__iter__().__next__(): 0})
-print(chain.get_reg(4, "present_load"))
+print(chain.get_reg(1, "present_load"))
 
 
 def myo2dyna(pose):
@@ -54,7 +54,7 @@ def myoband():
         m.connect()
         while True:
             m.run()
-            print(chain.get_reg(4, "present_load"))
+            print(chain.get_reg(1, "present_load"))
     except RuntimeError:
         print("Oof.")
     except KeyboardInterrupt:
