@@ -1,7 +1,7 @@
 import time
 
 import sys
-from multiprocessing import pool
+from multiprocessing import Pool
 
 import myo
 import classify_myo
@@ -13,7 +13,7 @@ chain = DxlChain("/dev/ttyUSB0", rate=1000000)
 
 # Load all the motors and obtain the list of IDs
 motors = chain.get_motor_list(broadcast=True)  # Discover all motors on the chain and return their IDs
-print("Discovered Dynamixels and Information:")
+print("Discovering Dynamixels and dumping information...")
 chain.dump()
 chain.goto(4, 0, speed=100, blocking=True)
 chain.goto(4, 1000, speed=0, blocking=True)
@@ -61,6 +61,6 @@ def myoband():
         print("Have nice day.")
 
 
-pool = pool.Pool()
+pool = Pool()
 pool.apply_async(myoband())
 pool.apply_async(periodic(lambda: print(chain.get_reg(4, "present_load"))))

@@ -390,7 +390,8 @@ class MainWindow:
         # ~ self.doHideInternalStates.set(True)
 
     def getSelectedMotor(self):
-        items = map(int, self.listElements.curselection())
+        items = list(
+            map(int, self.listElements.curselection()))  # dirty hack https://docs.python.org/3.0/whatsnew/3.0.html
         if len(items) == 0:
             return -1
         else:
@@ -414,7 +415,7 @@ class MainWindow:
                 if newid in self.chain.motors.keys():
                     answer = tkMessageBox.askyesno("ID Conflict",
                                                    "Warning: the motor ID %d is already attributed on your chain, are you sure you want to proceed?" % (
-                                                   newid))
+                                                       newid))
                     if not answer:
                         do = False
                 if do:
@@ -442,7 +443,7 @@ class MainWindow:
         else:
             answer = tkMessageBox.askyesno("Factory Reset",
                                            "Warning: you are about to completely reset motor ID %d, its ID and baudrate will be changed, are you sure you want to proceed?" % (
-                                           id))
+                                               id))
             if not answer: return
             do = True
             if 1 in self.chain.motors.keys():
@@ -468,7 +469,7 @@ class MainWindow:
 
             answer = tkMessageBox.askyesno("Change Baudrate",
                                            "Warning: motor ID %d will be set to baudrate %d, are you sure you want to proceed?" % (
-                                           id, realrate))
+                                               id, realrate))
             if answer:
                 self.chain.set_reg(id, "baud_rate", dxlrate)
                 self.connect()
