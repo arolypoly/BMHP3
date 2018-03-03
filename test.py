@@ -16,21 +16,21 @@ chain = DxlChain("/dev/ttyUSB0", rate=1000000)
 motors = chain.get_motor_list(broadcast=True)  # Discover all motors on the chain and return their IDs
 print("Discovering Dynamixels and dumping information...")
 chain.dump()
-chain.set_position({n: 1000 for n in range(chain.motors.__len__())})
-chain.set_position({n: 0 for n in range(chain.motors.__len__())})
+chain.set_position({n + 1: 1000 for n in range(chain.motors.__len__())})
+chain.set_position({n + 1: 0 for n in range(chain.motors.__len__())})
 print(chain.get_reg(1, "present_load"))
 
 
 def myo2dyna(pose):
     if pose.__str__().__eq__("Pose.FIST"):
         print(pose)
-        chain.set_position({n: 0 for n in range(chain.motors.__len__())}, False)
+        chain.set_position({n + 1: 0 for n in range(chain.motors.__len__())}, False)
     elif pose.__str__().__eq__("Pose.REST"):
         print(pose)
-        chain.set_position({n: 500 for n in range(chain.motors.__len__())}, False)
+        chain.set_position({n + 1: 500 for n in range(chain.motors.__len__())}, False)
     elif pose.__str__().__eq__("Pose.FINGERS_SPREAD"):
         print(pose)
-        chain.set_position({n: 1000 for n in range(chain.motors.__len__())}, False)
+        chain.set_position({n + 1: 1000 for n in range(chain.motors.__len__())}, False)
     elif pose.__str__().__eq__("THUMB_TO_PINKY"):
         print(pose)
         chain.set_position({1: 0, 6: 0}, False)
