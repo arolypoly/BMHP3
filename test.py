@@ -23,6 +23,8 @@ print("Discovering Dynamixels and dumping information...")
 chain.dump()
 git_to(1000)
 git_to(0)
+chain.goto(2, 4000)
+chain.goto(2, 0)
 print(chain.get_reg(1, "present_load"))
 
 
