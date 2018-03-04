@@ -38,7 +38,7 @@ def myo2dyna(pose):
         git_to(1000, False)
     elif pose.__str__().__eq__("Pose.THUMB_TO_PINKY"):
         print(pose)
-        chain.set_position({1: 0, 6: 0}, False)
+        chain.set_position({1: 0, 2: 0}, False)
     else:
         print("Please gib funding to do gud wrist thank.")
 
