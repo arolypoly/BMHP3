@@ -14,7 +14,8 @@ chain = DxlChain("/dev/ttyUSB0", rate=1000000)
 
 
 def git_to(position, blocking=True):
-    chain.set_position(dict.fromkeys(range(1, len(chain.motors) + 1), position), blocking=blocking)
+    chain.set_position({1: position, 2: position},
+                       blocking=blocking)
 
 
 # Load all the motors and obtain the list of IDs

@@ -328,7 +328,7 @@ class DxlChain:
                 raise DxlConfigurationException(
                     "Synchronized write %s impossible on chain, register absent from motor ID %d" % (reg_name, id))
             r = m.registers[reg_name]
-            if reg == None:
+            if reg is None:
                 reg = r
             else:
                 if reg.address != r.address:
