@@ -343,8 +343,10 @@ class DxlChain:
         # Everything is ok, build command and send
         payload = [Dxl.CMD_SYNC_WRITE, reg.address, reg.size]
         for i in range(0, len(ids)):
-            payload.append(ids.__iter__().__next__())
-            payload.extend(reg.todxl(positions.__iter__().__next__()))
+            id = ids[i]
+            pos = positions[i]
+            payload.append(id)
+            payload.extend(reg.todxl(pos))
 
         self.send(Dxl.BROADCAST, payload)
 
