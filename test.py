@@ -14,7 +14,7 @@ chain = DxlChain("/dev/ttyUSB0", rate=1000000)
 
 
 def git_to(position, blocking=True):
-    chain.set_position(dict.fromkeys(range(1, len(chain.motors)), position), blocking=blocking)
+    chain.set_position(dict.fromkeys(range(1, len(chain.motors) + 1), position), blocking=blocking)
 
 
 # Load all the motors and obtain the list of IDs
@@ -36,7 +36,7 @@ def myo2dyna(pose):
     elif pose.__str__().__eq__("Pose.FINGERS_SPREAD"):
         print(pose)
         git_to(1000, False)
-    elif pose.__str__().__eq__("THUMB_TO_PINKY"):
+    elif pose.__str__().__eq__("Pose.THUMB_TO_PINKY"):
         print(pose)
         chain.set_position({1: 0, 6: 0}, False)
     else:
